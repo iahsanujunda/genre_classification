@@ -1,0 +1,28 @@
+2021-11-23 13:41:35,853 INFO    MainThread:36205 [wandb_setup.py:_flush():69] setting env: {'project': 'genre_classification_production', 'run_group': 'dev'}
+2021-11-23 13:41:35,853 INFO    MainThread:36205 [wandb_setup.py:_flush():69] setting login settings: {}
+2021-11-23 13:41:35,853 INFO    MainThread:36205 [wandb_init.py:_log_setup():334] Logging user logs to /Users/ahsanujundai/workspace/genre_classification/download/wandb/run-20211123_134135-3ewzmppa/logs/debug.log
+2021-11-23 13:41:35,853 INFO    MainThread:36205 [wandb_init.py:_log_setup():335] Logging internal logs to /Users/ahsanujundai/workspace/genre_classification/download/wandb/run-20211123_134135-3ewzmppa/logs/debug-internal.log
+2021-11-23 13:41:35,853 INFO    MainThread:36205 [wandb_init.py:init():367] calling init triggers
+2021-11-23 13:41:35,854 INFO    MainThread:36205 [wandb_init.py:init():372] wandb.init called with sweep_config: {}
+config: {}
+2021-11-23 13:41:35,854 INFO    MainThread:36205 [wandb_init.py:init():416] starting backend
+2021-11-23 13:41:35,854 INFO    MainThread:36205 [backend.py:_multiprocessing_setup():69] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2021-11-23 13:41:35,900 INFO    MainThread:36205 [backend.py:ensure_launched():123] starting backend process...
+2021-11-23 13:41:35,915 INFO    MainThread:36205 [backend.py:ensure_launched():127] started backend process with pid: 36212
+2021-11-23 13:41:35,917 INFO    MainThread:36205 [wandb_init.py:init():421] backend started and connected
+2021-11-23 13:41:35,919 INFO    MainThread:36205 [wandb_init.py:init():461] updated telemetry
+2021-11-23 13:41:35,920 INFO    MainThread:36205 [wandb_init.py:init():480] communicating current version
+2021-11-23 13:41:36,669 INFO    MainThread:36205 [wandb_init.py:init():485] got version response upgrade_message: "wandb version 0.12.7 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2021-11-23 13:41:36,669 INFO    MainThread:36205 [wandb_init.py:init():493] communicating run to backend with 30 second timeout
+2021-11-23 13:41:37,009 INFO    MainThread:36205 [wandb_init.py:init():518] starting run threads in backend
+2021-11-23 13:41:37,064 INFO    MainThread:36205 [wandb_run.py:_console_start():1476] atexit reg
+2021-11-23 13:41:37,065 INFO    MainThread:36205 [wandb_run.py:_redirect():1339] redirect: SettingsConsole.REDIRECT
+2021-11-23 13:41:37,065 INFO    MainThread:36205 [wandb_run.py:_redirect():1344] Redirecting console.
+2021-11-23 13:41:37,065 INFO    MainThread:36205 [redirect.py:install():213] install start
+2021-11-23 13:41:37,066 INFO    MainThread:36205 [redirect.py:install():228] install stop
+2021-11-23 13:41:37,066 INFO    MainThread:36205 [redirect.py:install():213] install start
+2021-11-23 13:41:37,067 INFO    MainThread:36205 [redirect.py:install():228] install stop
+2021-11-23 13:41:37,068 INFO    MainThread:36205 [wandb_run.py:_redirect():1390] Redirects installed.
+2021-11-23 13:41:37,068 INFO    MainThread:36205 [wandb_init.py:init():542] run started, returning control to user process
+2021-11-23 13:41:40,550 INFO    MainThread:36205 [wandb_run.py:finish():1135] finishing run junda-ia/genre_classification_production/3ewzmppa

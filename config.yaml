@@ -1,5 +1,5 @@
 main:
-  project_name: exercise_14
+  project_name: genre_classification_production
   experiment_name: dev
   execute_steps:
     - download
@@ -14,7 +14,7 @@ main:
   random_seed: 42
 data:
   file_url: "https://github.com/udacity/nd0821-c2-build-model-workflow-exercises/blob/master/lesson-2-data-exploration-and-preparation/exercises/exercise_4/starter/genres_mod.parquet?raw=true"
-  reference_dataset: "exercise_14/preprocessed_data.csv:latest"
+  reference_dataset: "genre_classification_development/preprocessed_data.csv:latest"
   # Threshold for Kolomorov-Smirnov test
   ks_alpha: 0.05
   test_size: 0.3
@@ -30,7 +30,7 @@ random_forest_pipeline:
     min_samples_split: 2
     min_samples_leaf: 1
     min_weight_fraction_leaf: 0.0
-    max_features: 'auto'
+    max_features: 10
     max_leaf_nodes: null
     min_impurity_decrease: 0.0
     min_impurity_split: null

@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.7, pytest-6.2.2, py-1.10.0, pluggy-0.13.1 -- /Users/ahsanujundai/opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/ahsanujundai/workspace/genre_classification/check_data
+collecting ... collected 4 items
+
+test_data.py::test_column_presence_and_type PASSED
+test_data.py::test_class_names PASSED
+test_data.py::test_column_ranges PASSED
+test_data.py::test_kolmogorov_smirnov PASSED
+
+=============================== warnings summary ===============================
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/vendor/watchdog/utils/bricks.py:175
+  /Users/ahsanujundai/opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/vendor/watchdog/utils/bricks.py:175: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.10 it will stop working
+    class OrderedSet(collections.MutableSet):
+
+test_data.py::test_column_presence_and_type
+  /Users/ahsanujundai/opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/pluggy/callers.py:187: DtypeWarning: Columns (16) have mixed types.Specify dtype option on import or set low_memory=False.
+    res = hook_impl.function(*args)
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+======================== 4 passed, 2 warnings in 4.76s =========================

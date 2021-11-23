@@ -1,0 +1,775 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.7, pytest-6.2.2, py-1.10.0, pluggy-0.13.1 -- /Users/ahsanujundai/opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/ahsanujundai/workspace/genre_classification/check_data
+collecting ... collected 4 items
+
+test_data.py::test_column_presence_and_type ERROR
+test_data.py::test_class_names ERROR
+test_data.py::test_column_ranges ERROR
+test_data.py::test_kolmogorov_smirnov ERROR
+
+==================================== ERRORS ====================================
+_______________ ERROR at setup of test_column_presence_and_type ________________
+
+args = (<wandb.apis.public.Api object at 0x14192dca0>,)
+kwargs = {'name': 'exercise_14/preprocessed_data.csv:latest', 'type': None}
+message = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+payload = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        message = "Whoa, you found a bug."
+        try:
+>           return func(*args, **kwargs)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <wandb.apis.public.Api object at 0x14192dca0>
+name = 'exercise_14/preprocessed_data.csv:latest', type = None
+
+    @normalize_exceptions
+    def artifact(self, name, type=None):
+        """
+        Returns a single artifact by parsing path in the form `entity/project/run_id`.
+    
+        Arguments:
+            name: (str) An artifact name. May be prefixed with entity/project. Valid names
+                can be in the following forms:
+                    name:version
+                    name:alias
+                    digest
+            type: (str, optional) The type of artifact to fetch.
+        Returns:
+            A `Artifact` object.
+        """
+        if name is None:
+            raise ValueError("You must specify name= to fetch an artifact.")
+        entity, project, artifact_name = self._parse_artifact_path(name)
+>       artifact = Artifact(self.client, entity, project, artifact_name)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+client = <wandb.apis.public.RetryingClient object at 0x14194a0a0>
+entity = 'junda-ia', project = 'exercise_14'
+name = 'preprocessed_data.csv:latest', attrs = None
+
+    def __init__(self, client, entity, project, name, attrs=None):
+        self.client = client
+        self._entity = entity
+        self._project = project
+        self._artifact_name = name
+        self._attrs = attrs
+        if self._attrs is None:
+>           self._load()
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is None
+            or response["project"].get("artifact") is None
+        ):
+>           raise ValueError(
+                'Project %s/%s does not contain artifact: "%s"'
+                % (self.entity, self.project, self._artifact_name)
+            )
+E           ValueError: Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:3097: ValueError
+
+During handling of the above exception, another exception occurred:
+
+request = <SubRequest 'data' for <Function test_column_presence_and_type>>
+
+    @pytest.fixture(scope="session")
+    def data(request):
+    
+        reference_artifact = request.config.option.reference_artifact
+    
+        if reference_artifact is None:
+            pytest.fail("--reference_artifact missing on command line")
+    
+        sample_artifact = request.config.option.sample_artifact
+    
+        if sample_artifact is None:
+            pytest.fail("--sample_artifact missing on command line")
+    
+>       local_path = run.use_artifact(reference_artifact).file()
+
+conftest.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/sdk/wandb_run.py:1957: in use_artifact
+    artifact = public_api.artifact(type=type, name=name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:62: in wrapper
+    six.reraise(CommError, CommError(message, err), sys.exc_info()[2])
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/six.py:718: in reraise
+    raise value.with_traceback(tb)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: in wrapper
+    return func(*args, **kwargs)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: in artifact
+    artifact = Artifact(self.client, entity, project, artifact_name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: in __init__
+    self._load()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is None
+            or response["project"].get("artifact") is None
+        ):
+>           raise ValueError(
+                'Project %s/%s does not contain artifact: "%s"'
+                % (self.entity, self.project, self._artifact_name)
+            )
+E           wandb.errors.error.CommError: Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:3097: CommError
+______________________ ERROR at setup of test_class_names ______________________
+
+args = (<wandb.apis.public.Api object at 0x14192dca0>,)
+kwargs = {'name': 'exercise_14/preprocessed_data.csv:latest', 'type': None}
+message = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+payload = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        message = "Whoa, you found a bug."
+        try:
+>           return func(*args, **kwargs)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <wandb.apis.public.Api object at 0x14192dca0>
+name = 'exercise_14/preprocessed_data.csv:latest', type = None
+
+    @normalize_exceptions
+    def artifact(self, name, type=None):
+        """
+        Returns a single artifact by parsing path in the form `entity/project/run_id`.
+    
+        Arguments:
+            name: (str) An artifact name. May be prefixed with entity/project. Valid names
+                can be in the following forms:
+                    name:version
+                    name:alias
+                    digest
+            type: (str, optional) The type of artifact to fetch.
+        Returns:
+            A `Artifact` object.
+        """
+        if name is None:
+            raise ValueError("You must specify name= to fetch an artifact.")
+        entity, project, artifact_name = self._parse_artifact_path(name)
+>       artifact = Artifact(self.client, entity, project, artifact_name)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+client = <wandb.apis.public.RetryingClient object at 0x14194a0a0>
+entity = 'junda-ia', project = 'exercise_14'
+name = 'preprocessed_data.csv:latest', attrs = None
+
+    def __init__(self, client, entity, project, name, attrs=None):
+        self.client = client
+        self._entity = entity
+        self._project = project
+        self._artifact_name = name
+        self._attrs = attrs
+        if self._attrs is None:
+>           self._load()
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is None
+            or response["project"].get("artifact") is None
+        ):
+>           raise ValueError(
+                'Project %s/%s does not contain artifact: "%s"'
+                % (self.entity, self.project, self._artifact_name)
+            )
+E           ValueError: Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:3097: ValueError
+
+During handling of the above exception, another exception occurred:
+
+request = <SubRequest 'data' for <Function test_column_presence_and_type>>
+
+    @pytest.fixture(scope="session")
+    def data(request):
+    
+        reference_artifact = request.config.option.reference_artifact
+    
+        if reference_artifact is None:
+            pytest.fail("--reference_artifact missing on command line")
+    
+        sample_artifact = request.config.option.sample_artifact
+    
+        if sample_artifact is None:
+            pytest.fail("--sample_artifact missing on command line")
+    
+>       local_path = run.use_artifact(reference_artifact).file()
+
+conftest.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/sdk/wandb_run.py:1957: in use_artifact
+    artifact = public_api.artifact(type=type, name=name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:62: in wrapper
+    six.reraise(CommError, CommError(message, err), sys.exc_info()[2])
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/six.py:718: in reraise
+    raise value.with_traceback(tb)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: in wrapper
+    return func(*args, **kwargs)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: in artifact
+    artifact = Artifact(self.client, entity, project, artifact_name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: in __init__
+    self._load()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is None
+            or response["project"].get("artifact") is None
+        ):
+>           raise ValueError(
+                'Project %s/%s does not contain artifact: "%s"'
+                % (self.entity, self.project, self._artifact_name)
+            )
+E           wandb.errors.error.CommError: Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:3097: CommError
+_____________________ ERROR at setup of test_column_ranges _____________________
+
+args = (<wandb.apis.public.Api object at 0x14192dca0>,)
+kwargs = {'name': 'exercise_14/preprocessed_data.csv:latest', 'type': None}
+message = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+payload = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        message = "Whoa, you found a bug."
+        try:
+>           return func(*args, **kwargs)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <wandb.apis.public.Api object at 0x14192dca0>
+name = 'exercise_14/preprocessed_data.csv:latest', type = None
+
+    @normalize_exceptions
+    def artifact(self, name, type=None):
+        """
+        Returns a single artifact by parsing path in the form `entity/project/run_id`.
+    
+        Arguments:
+            name: (str) An artifact name. May be prefixed with entity/project. Valid names
+                can be in the following forms:
+                    name:version
+                    name:alias
+                    digest
+            type: (str, optional) The type of artifact to fetch.
+        Returns:
+            A `Artifact` object.
+        """
+        if name is None:
+            raise ValueError("You must specify name= to fetch an artifact.")
+        entity, project, artifact_name = self._parse_artifact_path(name)
+>       artifact = Artifact(self.client, entity, project, artifact_name)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+client = <wandb.apis.public.RetryingClient object at 0x14194a0a0>
+entity = 'junda-ia', project = 'exercise_14'
+name = 'preprocessed_data.csv:latest', attrs = None
+
+    def __init__(self, client, entity, project, name, attrs=None):
+        self.client = client
+        self._entity = entity
+        self._project = project
+        self._artifact_name = name
+        self._attrs = attrs
+        if self._attrs is None:
+>           self._load()
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is None
+            or response["project"].get("artifact") is None
+        ):
+>           raise ValueError(
+                'Project %s/%s does not contain artifact: "%s"'
+                % (self.entity, self.project, self._artifact_name)
+            )
+E           ValueError: Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:3097: ValueError
+
+During handling of the above exception, another exception occurred:
+
+request = <SubRequest 'data' for <Function test_column_presence_and_type>>
+
+    @pytest.fixture(scope="session")
+    def data(request):
+    
+        reference_artifact = request.config.option.reference_artifact
+    
+        if reference_artifact is None:
+            pytest.fail("--reference_artifact missing on command line")
+    
+        sample_artifact = request.config.option.sample_artifact
+    
+        if sample_artifact is None:
+            pytest.fail("--sample_artifact missing on command line")
+    
+>       local_path = run.use_artifact(reference_artifact).file()
+
+conftest.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/sdk/wandb_run.py:1957: in use_artifact
+    artifact = public_api.artifact(type=type, name=name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:62: in wrapper
+    six.reraise(CommError, CommError(message, err), sys.exc_info()[2])
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/six.py:718: in reraise
+    raise value.with_traceback(tb)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: in wrapper
+    return func(*args, **kwargs)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: in artifact
+    artifact = Artifact(self.client, entity, project, artifact_name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: in __init__
+    self._load()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is None
+            or response["project"].get("artifact") is None
+        ):
+>           raise ValueError(
+                'Project %s/%s does not contain artifact: "%s"'
+                % (self.entity, self.project, self._artifact_name)
+            )
+E           wandb.errors.error.CommError: Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:3097: CommError
+__________________ ERROR at setup of test_kolmogorov_smirnov ___________________
+
+args = (<wandb.apis.public.Api object at 0x14192dca0>,)
+kwargs = {'name': 'exercise_14/preprocessed_data.csv:latest', 'type': None}
+message = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+payload = 'Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"'
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        message = "Whoa, you found a bug."
+        try:
+>           return func(*args, **kwargs)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <wandb.apis.public.Api object at 0x14192dca0>
+name = 'exercise_14/preprocessed_data.csv:latest', type = None
+
+    @normalize_exceptions
+    def artifact(self, name, type=None):
+        """
+        Returns a single artifact by parsing path in the form `entity/project/run_id`.
+    
+        Arguments:
+            name: (str) An artifact name. May be prefixed with entity/project. Valid names
+                can be in the following forms:
+                    name:version
+                    name:alias
+                    digest
+            type: (str, optional) The type of artifact to fetch.
+        Returns:
+            A `Artifact` object.
+        """
+        if name is None:
+            raise ValueError("You must specify name= to fetch an artifact.")
+        entity, project, artifact_name = self._parse_artifact_path(name)
+>       artifact = Artifact(self.client, entity, project, artifact_name)
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+client = <wandb.apis.public.RetryingClient object at 0x14194a0a0>
+entity = 'junda-ia', project = 'exercise_14'
+name = 'preprocessed_data.csv:latest', attrs = None
+
+    def __init__(self, client, entity, project, name, attrs=None):
+        self.client = client
+        self._entity = entity
+        self._project = project
+        self._artifact_name = name
+        self._attrs = attrs
+        if self._attrs is None:
+>           self._load()
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is None
+            or response["project"].get("artifact") is None
+        ):
+>           raise ValueError(
+                'Project %s/%s does not contain artifact: "%s"'
+                % (self.entity, self.project, self._artifact_name)
+            )
+E           ValueError: Project junda-ia/exercise_14 does not contain artifact: "preprocessed_data.csv:latest"
+
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:3097: ValueError
+
+During handling of the above exception, another exception occurred:
+
+request = <SubRequest 'data' for <Function test_column_presence_and_type>>
+
+    @pytest.fixture(scope="session")
+    def data(request):
+    
+        reference_artifact = request.config.option.reference_artifact
+    
+        if reference_artifact is None:
+            pytest.fail("--reference_artifact missing on command line")
+    
+        sample_artifact = request.config.option.sample_artifact
+    
+        if sample_artifact is None:
+            pytest.fail("--sample_artifact missing on command line")
+    
+>       local_path = run.use_artifact(reference_artifact).file()
+
+conftest.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/sdk/wandb_run.py:1957: in use_artifact
+    artifact = public_api.artifact(type=type, name=name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:62: in wrapper
+    six.reraise(CommError, CommError(message, err), sys.exc_info()[2])
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/six.py:718: in reraise
+    raise value.with_traceback(tb)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/normalize.py:24: in wrapper
+    return func(*args, **kwargs)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:520: in artifact
+    artifact = Artifact(self.client, entity, project, artifact_name)
+../../../opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/lib/python3.9/site-packages/wandb/apis/public.py:2583: in __init__
+    self._load()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <[TypeError("'NoneType' object is not subscriptable") raised in repr()] Artifact object at 0x14194a130>
+
+    def _load(self):
+        query = gql(
+            """
+        query Artifact(
+            $entityName: String!,
+            $projectName: String!,
+            $name: String!
+        ) {
+            project(name: $projectName, entityName: $entityName) {
+                artifact(name: $name) {
+                    ...ArtifactFragment
+                }
+            }
+        }
+        %s
+        """
+            % ARTIFACT_FRAGMENT
+        )
+        response = None
+        try:
+            response = self.client.execute(
+                query,
+                variable_values={
+                    "entityName": self.entity,
+                    "projectName": self.project,
+                    "name": self._artifact_name,
+                },
+            )
+        except Exception:
+            # we check for this after doing the call, since the backend supports raw digest lookups
+            # which don't include ":" and are 32 characters long
+            if ":" not in self._artifact_name and len(self._artifact_name) != 32:
+                raise ValueError(
+                    'Attempted to fetch artifact without alias (e.g. "<artifact_name>:v3" or "<artifact_name>:latest")'
+                )
+        if (
+            response is None
+            or response.get("project") is

@@ -1,0 +1,31 @@
+{
+    "os": "macOS-12.0.1-x86_64-i386-64bit",
+    "python": "3.9.7",
+    "heartbeatAt": "2021-11-23T06:38:09.268615",
+    "startedAt": "2021-11-23T06:38:07.949271",
+    "docker": null,
+    "cpu_count": 4,
+    "cuda": null,
+    "args": [
+        "-s",
+        "-vv",
+        ".",
+        "--reference_artifact",
+        "genre_classification_development/preprocessed_data.csv:latest",
+        "--sample_artifact",
+        "preprocessed_data.csv:latest",
+        "--ks_alpha",
+        "0.05"
+    ],
+    "state": "running",
+    "program": "<python with no main file>",
+    "git": {
+        "remote": "git@github.com:iahsanujunda/genre_classification.git",
+        "commit": "1f44dabcb5da78c8523ff938882f9c0fafccc7db"
+    },
+    "email": "the.zlood@gmail.com",
+    "root": "/Users/ahsanujundai/workspace/genre_classification",
+    "host": "Izzuddin",
+    "username": "ahsanujundai",
+    "executable": "/Users/ahsanujundai/opt/anaconda3/envs/mlflow-7398531e5288219e428182dc4d6601ae57991d39/bin/python"
+}
