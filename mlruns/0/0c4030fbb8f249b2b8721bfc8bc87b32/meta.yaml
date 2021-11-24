@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/ahsanujundai/workspace/genre_classification/mlruns/0/0c4030fbb8f249b2b8721bfc8bc87b32/artifacts
+end_time: 1637734366268
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 0c4030fbb8f249b2b8721bfc8bc87b32
+run_uuid: 0c4030fbb8f249b2b8721bfc8bc87b32
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1637734318392
+status: 3
+tags: []
+user_id: ahsanujundai

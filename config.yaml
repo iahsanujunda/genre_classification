@@ -11,7 +11,7 @@ main:
   # This seed will be used to seed the random number generator
   # to ensure repeatibility of the data splits and other
   # pseudo-random operations
-  random_seed: 42
+  random_seed: 67
 data:
   file_url: "https://github.com/udacity/nd0821-c2-build-model-workflow-exercises/blob/master/lesson-2-data-exploration-and-preparation/exercises/exercise_4/starter/genres_mod.parquet?raw=true"
   reference_dataset: "genre_classification_development/preprocessed_data.csv:latest"
@@ -39,7 +39,7 @@ random_forest_pipeline:
     n_jobs: null
     # This is a different random seed than main.random_seed,
     # because this is used only within the RandomForest
-    random_state: 42
+    random_state: 67
     verbose: 0
     warm_start: false
     class_weight: "balanced"
